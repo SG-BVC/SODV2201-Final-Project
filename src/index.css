@@ -1,0 +1,249 @@
+/* Global Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', Arial, sans-serif;
+  background-color: #f3f4f6;
+  color: #1f2937;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* header */
+header {
+  background-color: #dc2626;
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+header nav a {
+  margin-left: 1rem;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+header nav a:hover {
+  opacity: 0.8;
+}
+
+header .cart-link {
+  background-color: #fff;
+  color: #dc2626;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* layout */
+main {
+  padding: 2rem;
+}
+
+h1, h2, h3 {
+  color: #111827;
+}
+
+/* menu */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.menu-item {
+  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.menu-item p {
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.menu-item button {
+  background-color: #dc2626;
+  border: none;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.menu-item button:hover {
+  background-color: #b91c1c;
+}
+
+/* cart */
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
+}
+
+.cart-item input {
+  width: 50px;
+  text-align: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.2rem;
+}
+
+.cart-summary {
+  text-align: right;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.checkout-btn {
+  background-color: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.checkout-btn:hover {
+  background-color: #15803d;
+}
+
+/* reservation Form */
+form.reservation {
+  background-color: #fff;
+  max-width: 500px;
+  margin: auto;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+form.reservation input, form.reservation button {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+}
+
+form.reservation button {
+  background-color: #dc2626;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+form.reservation button:hover {
+  background-color: #b91c1c;
+}
+
+/* chat bot */
+.chatbot {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 320px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chatbot-header {
+  background-color: #dc2626;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+
+.chatbot-messages {
+  padding: 1rem;
+  height: 200px;
+  overflow-y: auto;
+}
+
+.chatbot-input {
+  display: flex;
+  border-top: 1px solid #e5e7eb;
+}
+
+.chatbot-input input {
+  flex: 1;
+  border: none;
+  padding: 0.75rem;
+}
+
+.chatbot-input button {
+  background-color: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.chatbot-input button:hover {
+  background-color: #b91c1c;
+}
+
+/* admin */
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.admin-card {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  header nav a {
+    display: inline-block;
+    margin: 0.5rem;
+  }
+
+  .chatbot {
+    width: 90%;
+    right: 5%;
+  }
+}
