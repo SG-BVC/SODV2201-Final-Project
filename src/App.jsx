@@ -33,8 +33,7 @@ export default function App() {
             <div className="app-container">
                 <Header cartCount={cart.length} />
                 <Routes>
-                    <Route
-                        path="/"
+                    <Route path="/"
                         element={
                             <div className="page home-page">
                                 <h1>Welcome to NorthSkies</h1>
@@ -43,8 +42,7 @@ export default function App() {
                         }
                     />
                     <Route path="/menu" element={<MenuPage onAddToCart={addToCart} />} />
-                    <Route
-                        path="/cart"
+                    <Route path="/cart"
                         element={
                             <CartPage
                                 cart={cart}
