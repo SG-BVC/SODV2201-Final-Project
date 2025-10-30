@@ -61,3 +61,32 @@
   background-color: #fee2e2;
   color: #991b1b;
 }
+
+.reservation-list {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.reservation-item {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+}
+
+.reservation-item p {
+    margin: 0.3rem 0;
+}
+
+.status.success {
+    color: green;
+    margin-top: 1rem;
+}
+.status.error {
+    color: red;
+    margin-top: 1rem;
+}
