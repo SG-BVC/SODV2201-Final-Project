@@ -13,8 +13,9 @@ exports.createOrder = async (req, res) => {
       total += menuItem.price * item.quantity;
     }
 
+    const user = req.user ? req.user.id : null;
     const order = await Order.create({
-      user: req.user.id,
+      user,
       items,
       total,
       type,

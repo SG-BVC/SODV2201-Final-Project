@@ -23,10 +23,47 @@ export default function App() {
         setCart(c => c.map(x => x.id === id ? { ...x, qty } : x));
     }
 
-    function checkout() {
-        alert(`Checkout: ${cart.length} items — (this would call backend / payments).`);
-        setCart([]);
+   async function checkout() {
+    if (cart.length === 0) {
+        alert('Your cart is empty! Add items to order.');
+        return;
     }
+
+    const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+    const orderData = {
+        items: cart.map(item => ({
+            menuItem: item._id || item.id,
+            quantity: item.qty
+        })),
+        total,
+        type: 'pickup' 
+    };
+
+    try {
+        const response = await fetch('http://localhost:5000/api/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.msg || 'Failed to place order');
+        }
+
+        const order = await response.json();
+        alert(`Guest order placed successfully! 🎉\nOrder ID: ${order._id}\nTotal: $${total.toFixed(2)}\nStatus: ${order.status} (preparing)\nSave this ID for reference—no account history.`);
+        
+        setCart([]);
+        console.log('Guest order created:', order);
+    } catch (error) {
+        alert(`Order failed: ${error.message}\nTry again or add more details.`);
+        console.error('Checkout error:', error);
+    }
+}
 
     return (
         <Router>
