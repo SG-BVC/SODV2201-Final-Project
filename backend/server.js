@@ -14,7 +14,9 @@ connectDB();
 //  This is for Middleware
 app.use(helmet());
 app.use(morgan('dev'));
-app.use(cors({ origin: 'http://localhost:5173' })); 
+app.use(cors({ origin: 'http://localhost:5173' ,
+                credentials:true
+ })); 
 app.use(express.json());
 
 //  This is for Routes
