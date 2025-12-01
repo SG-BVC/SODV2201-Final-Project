@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Backend
+backend/node_modules/
+backend/.env
+backend/package-lock.json  # Optional—regenerates on npm install
+
+# Frontend (if any)
+node_modules/
+.env
+dist/

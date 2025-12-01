@@ -1,49 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchFilter from "../components/SearchFilter";
-import { MOCK_MENU } from "../data/mockMenu";
-import "./MenuPage.css";
-
+import "./MenuPage.css"; 
 export default function MenuPage({ onAddToCart }) {
-    const [menu] = useState(MOCK_MENU);
-    const [filtered, setFiltered] = useState(MOCK_MENU);
+  const [menuItems, setMenuItems] = useState([]);
+  const [filter, setFilter] = useState({ query: "", category: "All", dietary: "Any" });
+  const [loading, setLoading] = useState(true);
 
-    function handleFilter({ query, category, dietary }) {
-        const q = query.trim().toLowerCase();
-        const res = menu.filter(item => {
-            if (category !== "All" && item.category !== category) return false;
-            if (dietary !== "Any" && !item.dietary.includes(dietary)) return false;
-            if (q && !(item.name.toLowerCase().includes(q) || item.description.toLowerCase().includes(q))) return false;
-            return true;
-        });
-        setFiltered(res);
-    }
+  useEffect(() => {
+    fetch('http://localhost:5000/api/menu')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch menu');
+        return res.json();
+      })
+      .then(items => {
+        setMenuItems(items);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Menu fetch error:', err);
+        setLoading(false);
+        
+        setMenuItems([
+          { _id: "mock1", id: "1", name: "Apple", category: "desserts", price: 2.5, description: "Fresh apple", available: true },
+          { _id: "mock2", id: "2", name: "Broccoli", category: "starters", price: 5, description: "Steamed broccoli", available: true }
+        ]);
+      });
+  }, []);
 
-    return (
-        <main className="menu-page">
-            <h1>Menu</h1>
-            <SearchFilter onFilter={handleFilter} />
-            <div className="menu-grid">
-                {filtered.map(item => (
-                    <div key={item.id} className="menu-card">
-                        <h3>
-                            {item.name}{' '}
-                            <span className="menu-price">
-                                (${item.price.toFixed(2)})
-                            </span>
-                        </h3>
-                        <p className="menu-desc">{item.description}</p>
-                        <p className="menu-meta">
-                            Category: {item.category} • {item.dietary.join(', ') || '—'}
-                        </p>
-                        <div className="menu-actions">
-                            <button onClick={() => onAddToCart(item)} className="btn-primary">
-                                Add
-                            </button>
-                            <button className="btn-secondary">Details</button>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </main>
-    );
+  const filteredItems = menuItems.filter(item => {
+    if (filter.query && !item.name.toLowerCase().includes(filter.query.toLowerCase())) return false;
+    if (filter.category !== "All" && item.category !== filter.category) return false;
+    if (filter.dietary !== "Any" && !item.dietary?.includes(filter.dietary)) return false;
+    return true;
+  });
+
+  if (loading) return <div className="loading">Loading menu...</div>;
+
+  return (
+    <div className="menu-page">
+      <h1>Menu</h1>
+      <SearchFilter onFilter={setFilter} />
+      <div className="menu-grid">
+        {filteredItems.map(item => (
+          <div key={item._id} className="menu-item">
+            <h3>{item.name} ({item.category})</h3>
+            <p>{item.description}</p>
+            <p>Price: ${item.price}</p>
+            <p>Dietary: {item.dietary?.join(', ') || 'None'}</p>
+            <button onClick={() => onAddToCart({ ...item, id: item._id, qty: 1 })}>Add to Cart</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
