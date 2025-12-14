@@ -1,13 +1,15 @@
-require('dotenv').config();
-const express = require('express');
-const connectDB = require('./config/db');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const errorHandler = require('./middleware/errorHandler');
+import dotenv from "dotenv";
+import express from "express";
+import connectDB from "./config/db.js";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import errorHandler from "./middleware/errorHandler.js";
+import OpenAI from "openai";
 
 const app = express();
-
+dotenv.config();
+app.use(cors());
 
 connectDB();
 
@@ -19,17 +21,45 @@ app.use(cors({ origin: 'http://localhost:5173' ,
  })); 
 app.use(express.json());
 
-//  This is for Routes
-app.use('/api/users', require('./routes/users'));
-app.use('/api/menu', require('./routes/menu'));
-app.use('/api/orders', require('./routes/orders'));
-app.use('/api/reservations', require('./routes/reservations'));
-app.use('/api/events', require('./routes/events'));
-
 app.use(errorHandler);
 
-
 app.get('/', (req, res) => res.send('SRMS Backend API Running!'));
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+app.post("/api/chat", async (req, res) => {
+  const { message } = req.body;
+
+  try {
+    const completion = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a friendly restaurant assistant. Recommend dishes, answer dietary questions, and mention specials.",
+        },
+        { role: "user", content: message },
+      ],
+    });
+
+    res.json({
+      reply: completion.choices[0].message.content,
+    });
+  } catch (err) {
+
+    if (err.code === "insufficient_quota" || err.status === 429) {
+      return res.json({
+        reply: `If you are seeing this, the code works, I just ran out of tokens to generate responses, sorry!`
+      });
+    }
+
+    console.error(err);
+    res.status(500).json({ error: "AI failed to respond" });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
