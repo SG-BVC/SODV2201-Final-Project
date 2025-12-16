@@ -1,6 +1,6 @@
-const express = require('express');
-const { createReservation, getMyReservations, updateReservationStatus, getAllReservations } = require('../controllers/reservationController');
-const { protect, admin } = require('../middleware/auth');
+import express from "express";
+import { createReservation, getMyReservations, updateReservationStatus, getAllReservations } from "../controllers/reservationController.js";
+import { protect, admin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -9,4 +9,4 @@ router.get('/my', protect, getMyReservations);
 router.put('/:id', protect, admin, updateReservationStatus);
 router.get('/', protect, admin, getAllReservations);
 
-module.exports = router;
+export default router;

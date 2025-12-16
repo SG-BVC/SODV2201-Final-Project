@@ -1,6 +1,6 @@
-const express = require('express');
-const { createEvent, getMyEvents, approveEvent, getAllEvents } = require('../controllers/eventController');
-const { protect, admin } = require('../middleware/auth');
+import express from "express";
+import { createEvent, getMyEvents, approveEvent, getAllEvents } from "../controllers/eventController.js";
+import { protect, admin } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -9,4 +9,4 @@ router.get('/my', protect, getMyEvents);
 router.put('/:id/approve', protect, admin, approveEvent);
 router.get('/', protect, admin, getAllEvents);
 
-module.exports = router;
+export default router;

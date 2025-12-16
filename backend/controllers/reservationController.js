@@ -1,7 +1,6 @@
-const Reservation = require('../models/Reservation');
+import Reservation from "../models/Reservation.js";
 
-
-exports.createReservation = async (req, res) => {
+export const createReservation = async (req, res) => {
   const { date, time, guests, eventType, specialNotes } = req.body;
   try {
     
@@ -26,13 +25,13 @@ exports.createReservation = async (req, res) => {
   }
 };
 
-exports.getMyReservations = async (req, res) => {
+export const getMyReservations = async (req, res) => {
   const reservations = await Reservation.find({ user: req.user.id });
   res.json(reservations);
 };
 
 
-exports.updateReservationStatus = async (req, res) => {
+export const updateReservationStatus = async (req, res) => {
   const { status } = req.body;
   try {
     const reservation = await Reservation.findByIdAndUpdate(req.params.id, { status }, { new: true });
@@ -44,7 +43,7 @@ exports.updateReservationStatus = async (req, res) => {
 };
 
 
-exports.getAllReservations = async (req, res) => {
+export const getAllReservations = async (req, res) => {
   const reservations = await Reservation.find().populate('user', 'name email');
   res.json(reservations);
 };

@@ -1,8 +1,7 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
-
-exports.registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   const { name, email, password, role } = req.body;
   try {
     const userExists = await User.findOne({ email });
@@ -17,7 +16,7 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email }).select('+password');
@@ -32,12 +31,12 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-exports.getMe = async (req, res) => {
+export const getMe = async (req, res) => {
   const user = await User.findById(req.user.id).select('-password');
   res.json(user);
 };
 
-exports.updateMe = async (req, res) => {
+export const updateMe = async (req, res) => {
   try {
     const updates = { preferences: req.body.preferences };
     const user = await User.findByIdAndUpdate(req.user.id, updates, { new: true }).select('-password');
@@ -47,7 +46,7 @@ exports.updateMe = async (req, res) => {
   }
 };
 
-exports.getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
   const users = await User.find().select('-password');
   res.json(users);
 };
