@@ -1,36 +1,82 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ReservationPage.css";
 
 export default function ReservationPage() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
     const [datetime, setDatetime] = useState("");
     const [party, setParty] = useState(2);
     const [status, setStatus] = useState(null);
-    const [reservations, setReservations] = useState([]); // <-- store all reservations
+    const [reservations, setReservations] = useState([]);
 
-    function submit(e) {
+    const token = localStorage.getItem("token");
+
+    useEffect(() => {
+        if (!token) return;
+
+        async function fetchReservations() {
+            try {
+                const res = await fetch("http://localhost:5000/api/reservations/my", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    setReservations(data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch reservations", err);
+            }
+        }
+
+        fetchReservations();
+    }, [token]);
+
+    async function submit(e) {
         e.preventDefault();
+        setStatus(null);
 
-        const newReservation = {
-            name,
-            email,
-            datetime,
-            party,
-        };
+        if (!token) {
+            setStatus({ ok: false, message: "You must be logged in to reserve." });
+            return;
+        }
 
-        setReservations(prev => [...prev, newReservation]);
+        const [datePart, timePart] = datetime.split("T");
 
-        setStatus({
-            ok: true,
-            message: `Reservation confirmed for ${name} on ${datetime} (party of ${party})`
-        });
+        try {
+            const res = await fetch("http://localhost:5000/api/reservations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    date: datePart,
+                    time: timePart,
+                    guests: party,
+                    eventType: "dining",
+                    specialNotes: "",
+                }),
+            });
 
-        // reset form
-        setName("");
-        setEmail("");
-        setDatetime("");
-        setParty(2);
+            const data = await res.json();
+
+            if (!res.ok) {
+                setStatus({ ok: false, message: data.msg || "Failed to create reservation" });
+                return;
+            }
+
+            setStatus({
+                ok: true,
+                message: `Reservation confirmed for ${data.user.name} on ${datePart} at ${timePart} (party of ${party})`,
+            });
+
+            setReservations(prev => [...prev, data]);
+
+            setDatetime("");
+            setParty(2);
+        } catch (err) {
+            setStatus({ ok: false, message: "Server error" });
+        }
     }
 
     return (
@@ -38,19 +84,6 @@ export default function ReservationPage() {
             <h1>Book a Table</h1>
 
             <form onSubmit={submit} className="reservation-form">
-                <input
-                    required
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder="Full name"
-                />
-                <input
-                    required
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="Email"
-                />
                 <input
                     required
                     type="datetime-local"
@@ -67,7 +100,7 @@ export default function ReservationPage() {
                 <button type="submit">Confirm Reservation</button>
 
                 {status && (
-                    <div className={`status ${status.ok ? 'success' : 'error'}`}>
+                    <div className={`status ${status.ok ? "success" : "error"}`}>
                         {status.message}
                     </div>
                 )}
@@ -77,14 +110,23 @@ export default function ReservationPage() {
                 <section className="reservation-list">
                     <h2>Your Reservations</h2>
                     <ul>
-                        {reservations.map((r, index) => (
-                            <li key={index} className="reservation-item">
-                                <p><strong>Name:</strong> {r.name}</p>
-                                <p><strong>Email:</strong> {r.email}</p>
-                                <p><strong>Date & Time:</strong> {new Date(r.datetime).toLocaleString()}</p>
-                                <p><strong>Party Size:</strong> {r.party}</p>
-                            </li>
-                        ))}
+                        {reservations.map((r, index) => {
+                            // Convert date to JS Date object safely
+                            const dateObj = r.date ? new Date(r.date) : null;
+                            const datetimeStr = dateObj && r.time
+                                ? new Date(`${dateObj.toISOString().split('T')[0]}T${r.time}`).toLocaleString()
+                                : "Invalid Date";
+
+                            return (
+                                <li key={index} className="reservation-item">
+                                    <p><strong>Name:</strong> {r.user?.name || "—"}</p>
+                                    <p><strong>Email:</strong> {r.user?.email || "—"}</p>
+                                    <p><strong>Date & Time:</strong> {datetimeStr}</p>
+                                    <p><strong>Party Size:</strong> {r.guests}</p>
+                                    <p><strong>Status:</strong> {r.status}</p>
+                                </li>
+                            );
+                        })}
                     </ul>
                 </section>
             )}
