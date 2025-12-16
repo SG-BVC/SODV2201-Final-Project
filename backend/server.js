@@ -7,6 +7,12 @@ import morgan from "morgan";
 import errorHandler from "./middleware/errorHandler.js";
 import OpenAI from "openai";
 
+import userRoutes from "./routes/users.js";
+import menuRoutes from "./routes/menu.js";
+import orderRoutes from "./routes/orders.js";
+import reservationRoutes from "./routes/reservations.js";
+import eventRoutes from "./routes/events.js";
+
 const app = express();
 dotenv.config();
 app.use(cors());
@@ -16,10 +22,14 @@ connectDB();
 //  This is for Middleware
 app.use(helmet());
 app.use(morgan('dev'));
-app.use(cors({ origin: 'http://localhost:5173' ,
-                credentials:true
- })); 
+app.use(cors({ origin: 'http://localhost:5173', credentials:true})); 
 app.use(express.json());
+
+app.use("/api/users", userRoutes);
+app.use("/api/menu", menuRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/reservations", reservationRoutes);
+app.use("/api/events", eventRoutes);
 
 app.use(errorHandler);
 

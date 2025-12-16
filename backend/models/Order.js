@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
@@ -12,4 +12,4 @@ const orderSchema = new mongoose.Schema({
   address: { type: String } 
 }, { timestamps: true });
 
-module.exports = mongoose.model('Order', orderSchema);
+export default mongoose.model("Order", orderSchema);

@@ -1,7 +1,6 @@
-const MenuItem = require('../models/MenuItem');
+import MenuItem from "../models/MenuItem.js";
 
-
-exports.getMenu = async (req, res) => {
+export const getMenu = async (req, res) => {
   const { category, dietary, available, priceMax } = req.query;
   let query = { available: available !== 'false' };
   if (category) query.category = category;
@@ -16,7 +15,7 @@ exports.getMenu = async (req, res) => {
   }
 };
 
-exports.createMenuItem = async (req, res) => {
+export const createMenuItem = async (req, res) => {
   try {
     const item = await MenuItem.create(req.body);
     res.status(201).json(item);
@@ -26,7 +25,7 @@ exports.createMenuItem = async (req, res) => {
 };
 
 
-exports.updateMenuItem = async (req, res) => {
+export const updateMenuItem = async (req, res) => {
   try {
     const item = await MenuItem.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!item) return res.status(404).json({ msg: 'Item not found' });
@@ -37,7 +36,7 @@ exports.updateMenuItem = async (req, res) => {
 };
 
 
-exports.deleteMenuItem = async (req, res) => {
+export const deleteMenuItem = async (req, res) => {
   try {
     const item = await MenuItem.findByIdAndDelete(req.params.id);
     if (!item) return res.status(404).json({ msg: 'Item not found' });

@@ -1,7 +1,6 @@
-const Event = require('../models/Event');
+import Event from "../models/Event.js";
 
-
-exports.createEvent = async (req, res) => {
+export const createEvent = async (req, res) => {
   const { name, date, time, guests, menuSelections } = req.body;
   try {
     const event = await Event.create({
@@ -18,13 +17,13 @@ exports.createEvent = async (req, res) => {
 };
 
 
-exports.getMyEvents = async (req, res) => {
+export const getMyEvents = async (req, res) => {
   const events = await Event.find({  });
   res.json(events);
 };
 
 
-exports.approveEvent = async (req, res) => {
+export const approveEvent = async (req, res) => {
   try {
     const event = await Event.findByIdAndUpdate(req.params.id, {
       status: 'approved',
@@ -38,7 +37,7 @@ exports.approveEvent = async (req, res) => {
 };
 
 
-exports.getAllEvents = async (req, res) => {
+export const getAllEvents = async (req, res) => {
   const events = await Event.find().populate('approvedBy', 'name');
   res.json(events);
 };
