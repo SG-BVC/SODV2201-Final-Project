@@ -53,3 +53,19 @@
     background-color: #f9f9f9;
     color: #b91c1c;
 }
+
+.login-btn {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #ff4b4b;
+}

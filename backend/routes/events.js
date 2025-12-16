@@ -1,12 +1,12 @@
 import express from "express";
 import { createEvent, getMyEvents, approveEvent, getAllEvents } from "../controllers/eventController.js";
-import { protect, admin } from "../middleware/auth.js";
+import { auth, adminOnly } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post('/', protect, createEvent);
-router.get('/my', protect, getMyEvents);
-router.put('/:id/approve', protect, admin, approveEvent);
-router.get('/', protect, admin, getAllEvents);
+router.post('/', auth, createEvent);
+router.get('/my', auth, getMyEvents);
+router.put('/:id/approve', auth, adminOnly, approveEvent);
+router.get('/', auth, adminOnly, getAllEvents);
 
 export default router;

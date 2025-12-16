@@ -8,48 +8,48 @@ export default function Chatbot() {
     const [input, setInput] = useState("");
 
     async function send() {
-    if (!input.trim()) return;
+        if (!input.trim()) return;
 
-    const userMsg = { from: "user", text: input };
-    setMessages(m => [...m, userMsg]);
+        const userMsg = { from: "user", text: input };
+        setMessages(m => [...m, userMsg]);
 
-    const userInput = input;
-    setInput("");
+        const userInput = input;
+        setInput("");
 
-    try {
-        const res = await fetch("http://localhost:5000/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: userInput }),
-        });
+        try {
+            const res = await fetch("http://localhost:5000/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userInput }),
+            });
 
-        const data = await res.json();
+            const data = await res.json();
 
-        setMessages(m => [...m, { from: "bot", text: data.reply }]);
-    } catch {
-        setMessages(m => [...m, { from: "bot", text: "Sorry, something went wrong" }]);
+            setMessages(m => [...m, { from: "bot", text: data.reply }]);
+        } catch {
+            setMessages(m => [...m, { from: "bot", text: "Sorry, something went wrong" }]);
+        }
     }
-}
 
-return (
-    <div className="chatbot">
-        <div className="chatbot-header">AI Assistant</div>
-        <div className="chatbot-messages">
-            {messages.map((m, i) => (
-                <div key={i} className={m.from === 'bot' ? 'bot-message' : 'user-message'}>
-                    {m.text}
-                </div>
-            ))}
+    return (
+        <div className="chatbot">
+            <div className="chatbot-header">AI Assistant</div>
+            <div className="chatbot-messages">
+                {messages.map((m, i) => (
+                    <div key={i} className={m.from === 'bot' ? 'bot-message' : 'user-message'}>
+                        {m.text}
+                    </div>
+                ))}
+            </div>
+            <div className="chatbot-input">
+                <input
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && send()}
+                    placeholder="Ask about specials or recommendations"
+                />
+                <button onClick={send}>Send</button>
+            </div>
         </div>
-        <div className="chatbot-input">
-            <input
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && send()}
-                placeholder="Ask about specials or recommendations"
-            />
-            <button onClick={send}>Send</button>
-        </div>
-    </div>
-);
+    );
 }
